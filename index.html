@@ -1,0 +1,94 @@
+<script src="http://daybrush.github.io/scenejs/release/latest/scene.min.js"></script>
+<script src="Scene.js"></script>
+<style>
+	body {
+		background: #FEFDE3;
+	}
+	.d {
+		position: absolute;
+	}
+	.character img {
+		height: 100px;
+	}
+	.d .count {
+		position: absolute;
+		width: 100%;
+		height: 100%;
+		background: url(http://daybrush.com/main/images/characters.png) no-repeat;
+		background-position-x: 100%;
+	}
+
+	.character2 {
+		top: 150px;
+	}
+</style>
+<div class="character1 character d">
+	<div class="count">
+	</div>
+	<img src="http://daybrush.com/main/images/daybrush_01.png">
+</div>
+<div class="character2 character d">
+		<div class="count">
+		</div>
+		<img src="http://daybrush.com/main/images/daybrush_01.png">
+	</div>
+<script>
+	
+	const scene = new Scene({
+		".d" : {
+			0: {
+				left: "0px",
+				transform: {rotate: "-20deg"},
+			},
+			1: {
+				transform: {rotate: "20deg"},
+			},
+			2: {
+				transform: {rotate: "-20deg"},
+			},
+			3: {
+				transform: {rotate: "20deg"},
+			},
+			4: {
+				transform: {rotate: "-20deg"},
+			},
+			5: {
+				left: "400px",
+				transform: {rotate: "20deg"},
+			}
+		},
+		".d .count": {
+			0: {
+				"background-position-x": "100%"
+			},
+			5: {
+				"background-position-x": "0%"
+			}
+		},
+	}, {
+
+	});
+
+	
+	function stopMotion(item, dist, element) {
+		item.fromEvent("animate")
+			.takeUntil(item.fromEvent("ended"))
+			.deduplicate(({currentTime}) => parseInt(currentTime / dist))
+			.map(e => e.frame)
+			.each(frame => element.style.cssText += frame.toCSS());
+
+		item.play();
+	}
+	function play(item, element) {
+		item.fromEvent("animate")
+			.takeUntil(item.fromEvent("ended"))
+			.map(e => e.frame)
+			.each(frame => element.style.cssText += frame.toCSS());
+
+
+	}
+	play(scene.getItem(".d"), document.querySelector(".character1.d"));
+	play(scene.getItem(".d .count"), document.querySelector(".character1.d .count"));
+	stopMotion(scene.getItem(".d"), 1, document.querySelector(".character2.d"));
+	stopMotion(scene.getItem(".d .count"), 1, document.querySelector(".character2.d .count"));
+</script>
